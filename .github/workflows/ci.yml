@@ -19,7 +19,6 @@ jobs: # jobs means what are the tasks to be done in this workflow
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Install backend dependencies
         working-directory: server
