@@ -3,9 +3,9 @@ name: built-and-lint #name means CI workflow name
 # on means triggering point , workflow starts only when this branches trigger for push and pull_request alone
 on:
   push:
-    branches: [main,dev]
+    branches: [devops-main,dev]
   pull_request:
-    branches: [main,dev]
+    branches: [devops-main,dev]
 
 jobs: # jobs means what are the tasks to be done in this workflow
   built-and-lint:
