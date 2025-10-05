@@ -1,0 +1,46 @@
+name: built-and-lint #name means CI workflow name
+
+# on means triggering point , workflow starts only when this branches trigger for push and pull_request alone
+on:
+  push:
+    branches: [main,dev]
+  pull_request:
+    branches: [main,dev]
+
+jobs: # jobs means what are the tasks to be done in this workflow
+  built-and-lint:
+    runs-on: ubuntu-latest
+
+    steps: # steps means what are the individual steps to be done in this job
+      - name: Checkout repo
+        uses: actions/checkout@v3 # this action checks out your repository under $GITHUB_WORKSPACE, so your workflow can access it
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install backend dependencies
+        working-directory: server
+        run: npm ci
+      
+      - name: lint backend
+        working-directory: server
+        run: npm run lint -- --max-warnings=0
+
+      - name: Install frontend dependencies
+        working-directory: client
+        run: npm ci # npm ci is preferred in CI/CD pipelines because it installs dependencies based on the exact versions specified in the package-lock.json file, ensuring consistency and reliability across different environments.
+      
+      - name: lint frontend
+        working-directory: client
+        run: npm run lint -- --max-warnings=0
+
+      - name: Build backend image 
+        run: docker build -t backend ./server
+
+      - name: Build frontend image
+        run: docker build -t frontend ./client
+  
+# The workflow is named "built-and-lint" and is triggered on push or pull request events to the "main" or "dev" branches.
